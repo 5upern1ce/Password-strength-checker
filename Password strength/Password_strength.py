@@ -1,69 +1,47 @@
+def check_password_strength(counter: int) -> bool:
+    hasLower = False
+    hasUpper = False
+    hasNumber = False
 
-lower_count = 0
-upper_count = 0
-number_count = 0
-counter = 0
-def check_password_strength():
-    global lower_count
-    global upper_count
-    global number_count
-    global counter
-    password = input(f"What password would you like to try? You're on try {counter}/3! \n")
+    types_of_char = 0
+
+    password = input(
+        f"What password would you like to try? You're on try {counter}/3! \n"
+    )
     if len(password) > 12 or len(password) < 6:
-        counter += 1
         print("Password is either less than 6 characters or more than 12 characters!")
-        if counter < 3:
-            check_password_strength()
-        else:
-            return 1
 
+        counter += 1
+        return check_password_strength(counter) if counter < 3 else False
     else:
         for letter in password:
-            if 'a' <= letter <= 'z': 
-                lower_count += 1
-            elif 'A' <= letter <= 'Z':
-                upper_count += 1
-            elif '0' <= letter <= '9':
-                number_count += 1
-        types_of_char = 0
-        if lower_count > 0:
-            types_of_char += 1
-        if upper_count > 0:
-            types_of_char += 1
-        if number_count > 0:
-            types_of_char += 1
+            hasLower = "a" <= letter <= "z" or hasLower
+            hasUpper = "A" <= letter <= "Z" or hasUpper
+            hasNumber = "0" <= letter <= "9" or hasNumber
+
+        types_of_char = hasLower + hasUpper + hasNumber
+
+    try:
+        strength = ["weak", "medium", "strong"][types_of_char - 1]
+
+        print(f"This is a {strength} password")
+
+        if types_of_char == 3:
+            return True
+    except Exception as e:
+        print("Something has gone wrong")
+    finally:
+        counter += 1
+        return check_password_strength(counter) if counter < 3 else False
 
 
-        if types_of_char == 1:
-            print("This is a weak password")
-            counter += 1
-            if counter < 3:
-                check_password_strength()
-            else:
-                return 1
-        elif types_of_char == 2:
-            print("This is a medium password")
-            counter += 1
-            if counter < 3:
-                check_password_strength()
-            else:
-                return 1
-        elif types_of_char == 3:
-            print("This is a strong password")
-            counter += 1
-            if counter < 3:
-                check_password_strength()
-            else:
-                return 1
-        else:
-            print("Something has gone wrong!")
-            counter += 1
-            if counter < 3:
-                check_password_strength()
-            else:
-                return 1
 def main():
-    check_password_strength()
+    ret = check_password_strength(0)
+
+    if ret:
+        print("You have successfully created a strong password.")
+    else:
+        print("You have failed to create a strong password")
 
 
 if __name__ == "__main__":
